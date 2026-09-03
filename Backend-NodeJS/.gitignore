@@ -1,0 +1,9 @@
+# Installed packages and development output
+node_modules/
+coverage/
+*.log
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example

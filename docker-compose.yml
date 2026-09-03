@@ -1,0 +1,40 @@
+services:
+  database:
+    image: mariadb:11.8
+    container_name: angular-lab-database
+    environment:
+      MARIADB_DATABASE: todos_lab
+      MARIADB_USER: todos_user
+      MARIADB_PASSWORD: todos_password
+      MARIADB_ROOT_PASSWORD: root_password_for_local_learning
+    ports:
+      - '3306:3306'
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./Docker/mariadb/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ['CMD', 'healthcheck.sh', '--connect', '--innodb_initialized']
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  api:
+    build:
+      context: ./Backend-NodeJS
+    container_name: angular-lab-api
+    environment:
+      PORT: 3000
+      DB_HOST: database
+      DB_PORT: 3306
+      DB_NAME: todos_lab
+      DB_USER: todos_user
+      DB_PASSWORD: todos_password
+      CORS_ORIGIN: http://localhost:4200
+    ports:
+      - '3000:3000'
+    depends_on:
+      database:
+        condition: service_healthy
+
+volumes:
+  mariadb_data:

@@ -1,0 +1,7 @@
+<header class="site-header">
+  <a class="brand" routerLink="/" (click)="closeMenu()">Angular <span>Lab</span></a>
+  <button class="menu-button" type="button" (click)="menuOpen.update(value => !value)" [attr.aria-expanded]="menuOpen()" aria-controls="main-navigation">{{ menuOpen() ? 'Cerrar menú' : 'Abrir menú' }}</button>
+  <nav id="main-navigation" [class.is-open]="menuOpen()" aria-label="Navegación principal">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">Inicio</a><a routerLink="/signals" routerLinkActive="active" (click)="closeMenu()">Señales</a><a routerLink="/templates" routerLinkActive="active" (click)="closeMenu()">Plantillas</a><a routerLink="/forms" routerLinkActive="active" (click)="closeMenu()">Formularios</a><a routerLink="/services" routerLinkActive="active" (click)="closeMenu()">Servicios</a>
+  </nav>
+</header><main class="page-shell"><router-outlet /></main>
