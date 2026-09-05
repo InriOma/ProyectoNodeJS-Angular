@@ -1,6 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
 import { Todo, TodoApiService } from './todo-api.service';
-import ti from '@angular/common/locales/ti';
 
 @Component({
   template: `
@@ -8,10 +7,12 @@ import ti from '@angular/common/locales/ti';
     <h1>TODO List con Express y MariaDB</h1>
     <p class="lead">Este ejemplo usa <code>HttpClient</code>, la solución HTTP nativa de Angular y equivalente a Axios.</p>
     <section class="lab">
+      <h1>Agregar Tarea</h1>
       <form class="input-row" (submit)="create(input.value, $event)">
         <input #input aria-label="Nueva tarea" placeholder="Ej. Probar POST /api/todos">
         <button type="submit">Crear tarea</button>
       </form>
+      <p>Hay {{ todos().length }} tareas en total.</p> 
       @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
       @if (loading()) { <p>Cargando tareas…</p> } @else if (!todos().length) { <p class="empty">No hay tareas.</p> } @else {
         <ul>@for (todo of todos(); track todo.id) {

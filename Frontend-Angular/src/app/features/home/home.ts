@@ -1,7 +1,60 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-@Component({ imports:[RouterLink], template:`
-<section class="hero"><p class="eyebrow">Ruta práctica para tu examen técnico</p><h1>Angular para quien ya domina JavaScript, React y Vue</h1><p>Explora cada tema, modifica el código y compara el modelo mental. Cada página es una ruta lazy: Angular descarga el ejemplo solo al visitarlo.</p></section>
-<section class="roadmap" aria-label="Roadmap de aprendizaje">@for (step of steps; track step.title) { <a class="card" [routerLink]="step.link"><span>{{ step.number }}</span><h2>{{ step.title }}</h2><p>{{ step.description }}</p><strong>Ver laboratorio →</strong></a> }</section>
-<section class="interview"><h2>Prioridad para entrevistas</h2><ol><li>Componentes standalone, rutas y DI con <code>inject()</code>.</li><li>Signals: <code>signal</code> y <code>computed</code>; no mutar estado.</li><li>Control flow nativo: <code>&#64;if</code> y <code>&#64;for</code>.</li><li>Formularios reactivos, validación y servicios testeables.</li></ol></section>` })
-export class Home { protected readonly steps=[{number:'01',title:'Estado con signals',description:'El equivalente moderno a useState y computed.',link:'/signals'},{number:'02',title:'Plantillas y flujo',description:'Data binding y control flow integrado.',link:'/templates'},{number:'03',title:'Formularios reactivos',description:'Modelo, validación y envío explícitos.',link:'/forms'},{number:'04',title:'Servicios e inyección',description:'Estado compartido y dependencias.',link:'/services'}]; }
+@Component({
+  imports: [RouterLink],
+  template: ` <section class="hero">
+      <p class="eyebrow">Ruta práctica para tu examen técnico</p>
+      <h1>Angular para quien ya domina JavaScript, React y Vue</h1>
+      <p>
+        Explora cada tema, modifica el código y compara el modelo mental. Cada página es una ruta
+        lazy: Angular descarga el ejemplo solo al visitarlo.
+      </p>
+    </section>
+    <section class="roadmap" aria-label="Roadmap de aprendizaje">
+      @for (step of steps; track step.title) {
+        <a class="card" [routerLink]="step.link"
+          ><span>{{ step.number }}</span>
+          <h2>{{ step.title }}</h2>
+          <p>{{ step.description }}</p>
+          <strong>Ver laboratorio →</strong></a
+        >
+      }
+    </section>
+    <section class="interview">
+      <h2>Prioridad para entrevistas</h2>
+      <ol>
+        <li>Componentes standalone, rutas y DI con <code>inject()</code>.</li>
+        <li>Signals: <code>signal</code> y <code>computed</code>; no mutar estado.</li>
+        <li>Control flow nativo: <code>&#64;if</code> y <code>&#64;for</code>.</li>
+        <li>Formularios reactivos, validación y servicios testeables.</li>
+      </ol>
+    </section>`,
+})
+export class Home {
+  protected readonly steps = [
+    {
+      number: '01',
+      title: 'Estado con signals',
+      description: 'El equivalente moderno a useState y computed.',
+      link: '/signals',
+    },
+    {
+      number: '02',
+      title: 'Plantillas y flujo',
+      description: 'Data binding y control flow integrado.',
+      link: '/templates',
+    },
+    {
+      number: '03',
+      title: 'Formularios reactivos',
+      description: 'Modelo, validación y envío explícitos.',
+      link: '/forms',
+    },
+    {
+      number: '04',
+      title: 'Servicios e inyección',
+      description: 'Estado compartido y dependencias.',
+      link: '/services',
+    },
+  ];
+}
