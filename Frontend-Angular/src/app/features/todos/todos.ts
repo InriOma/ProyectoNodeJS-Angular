@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { Todo, TodoApiService } from './todo-api.service';
 
 @Component({
@@ -15,7 +15,7 @@ import { Todo, TodoApiService } from './todo-api.service';
         <input #input aria-label="Nueva tarea" placeholder="Ej. Probar POST /api/todos" />
         <button type="submit">Crear tarea</button>
       </form>
-      <p>Hay {{ todos().length }} tareas en total.</p>
+      <p>Hay {{ todos().length }} tareas. {{ completedCount() }} completadas.</p>
       @if (error()) {
         <p class="error" role="alert">{{ error() }}</p>
       }
@@ -74,6 +74,12 @@ export class Todos {
   protected readonly loading = signal(true);
   protected readonly error = signal('');
 
+  // Señal derivada: solo tareas completadas
+  protected readonly completedTodos = computed(() => this.todos().filter((todo) => todo.completed));
+
+  // Señal derivada: conteo de completadas
+  protected readonly completedCount = computed(() => this.completedTodos().length);
+
   constructor() {
     this.load();
   }
@@ -103,6 +109,7 @@ export class Todos {
       error: () => this.fail('No se pudo eliminar la tarea.'),
     });
   }
+
   private load(): void {
     this.api.list().subscribe({
       next: (todos) => {

@@ -14,8 +14,16 @@ export class TodoApiService {
   private readonly http = inject(HttpClient);
   private readonly url = 'http://localhost:3000/api/todos';
 
-  list(): Observable<Todo[]> { return this.http.get<Todo[]>(this.url); }
-  create(title: string): Observable<Todo> { return this.http.post<Todo>(this.url, { title }); }
-  toggle(todo: Todo): Observable<Todo> { return this.http.patch<Todo>(`${this.url}/${todo.id}`, { completed: !todo.completed }); }
-  remove(id: number): Observable<void> { return this.http.delete<void>(`${this.url}/${id}`); }
+  list(): Observable<Todo[]> {
+    return this.http.get<Todo[]>(this.url);
+  }
+  create(title: string): Observable<Todo> {
+    return this.http.post<Todo>(this.url, { title });
+  }
+  toggle(todo: Todo): Observable<Todo> {
+    return this.http.patch<Todo>(`${this.url}/${todo.id}`, { completed: !todo.completed });
+  }
+  remove(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.url}/${id}`);
+  }
 }
