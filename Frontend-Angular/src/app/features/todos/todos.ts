@@ -11,27 +11,51 @@ import { Todo, TodoApiService } from './todo-api.service';
     </p>
     <section class="lab">
       <h1>Agregar Tarea</h1>
+
       <form class="input-row" (submit)="create(input.value, $event)">
-        <input #input aria-label="Nueva tarea" placeholder="Ej. Probar POST /api/todos" />
+        <input #input placeholder="Ej. Probar POST /api/todos" />
         <button type="submit">Crear tarea</button>
       </form>
-      <p>Hay {{ todos().length }} tareas. {{ completedCount() }} completadas.</p>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button [class.active]="activeTab() === 'all'" (click)="activeTab.set('all')">
+          Todas ({{ todos().length }})
+        </button>
+        <button [class.active]="activeTab() === 'pending'" (click)="activeTab.set('pending')">
+          Pendientes ({{ pendingCount() }})
+        </button>
+        <button [class.active]="activeTab() === 'completed'" (click)="activeTab.set('completed')">
+          Completadas ({{ completedCount() }})
+        </button>
+      </div>
+
+      <!-- Estados -->
       @if (error()) {
-        <p class="error" role="alert">{{ error() }}</p>
+        <p class="error">{{ error() }}</p>
       }
       @if (loading()) {
         <p>Cargando tareas…</p>
-      } @else if (!todos().length) {
-        <p class="empty">No hay tareas.</p>
+      } @else if (!filteredTodos().length) {
+        <p class="empty">
+          @if (activeTab() === 'pending') {
+            No hay tareas pendientes.
+          } @else if (activeTab() === 'completed') {
+            No hay tareas completadas.
+          } @else {
+            No hay tareas.
+          }
+        </p>
       } @else {
+        <!-- Usa filteredTodos() en vez de todos() -->
         <ul>
-          @for (todo of todos(); track todo.id) {
+          @for (todo of filteredTodos(); track todo.id) {
             <li>
               <label>
                 <input type="checkbox" [checked]="todo.completed" (change)="toggle(todo)" />
                 <span [class.done]="todo.completed">{{ todo.title }}</span>
               </label>
-              <button type="button" (click)="remove(todo.id)">Eliminar</button>
+              <button (click)="remove(todo.id)">Eliminar</button>
             </li>
           }
         </ul>
@@ -66,6 +90,41 @@ import { Todo, TodoApiService } from './todo-api.service';
       color: #64748b;
       text-decoration: line-through;
     }
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 2px solid #e2e8f0;
+      margin: 1rem 0;
+    }
+    .tabs button {
+      padding: 0.5rem 1rem;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+    .tabs button:hover {
+      color: #3b82f6;
+    }
+    .tabs button.active {
+      color: #3b82f6;
+      border-bottom-color: #3b82f6;
+      font-weight: 600;
+    }
+    .empty {
+      text-align: center;
+      padding: 2rem;
+      color: #94a3b8;
+      font-style: italic;
+    }
+    .error {
+      color: #ef4444;
+      padding: 1rem;
+      background: #fef2f2;
+      border-radius: 0.5rem;
+    }
   `,
 })
 export class Todos {
@@ -74,11 +133,23 @@ export class Todos {
   protected readonly loading = signal(true);
   protected readonly error = signal('');
 
-  // Señal derivada: solo tareas completadas
-  protected readonly completedTodos = computed(() => this.todos().filter((todo) => todo.completed));
+  // Estado del tab activo
+  protected readonly activeTab = signal<'all' | 'pending' | 'completed'>('all');
 
-  // Señal derivada: conteo de completadas
-  protected readonly completedCount = computed(() => this.completedTodos().length);
+  // Tareas filtradas según el tab (computed reactivo)
+  protected readonly filteredTodos = computed(() => {
+    const tab = this.activeTab();
+    if (tab === 'pending') return this.todos().filter((t) => !t.completed);
+    if (tab === 'completed') return this.todos().filter((t) => t.completed);
+    return this.todos();
+  });
+
+  // Contadores para los tabs
+  protected readonly pendingCount = computed(() => this.todos().filter((t) => !t.completed).length);
+
+  protected readonly completedCount = computed(
+    () => this.todos().filter((t) => t.completed).length,
+  );
 
   constructor() {
     this.load();
